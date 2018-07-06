@@ -20,12 +20,12 @@ print 'Mode: %s' % vehicle.mode.name
 print 'System Status: %s' % vehicle.system_status.state
 print 'GPS: %s' % vehicle.gps_0
 print 'Last Heartbeat: %s' % vehicle.last_heartbeat
-
-#Vehicle Capabilities
-print vehicle.capabilities.set_actuator_target
-print vehicle.capabilities.flight_termination
-print vehicle.capabilities.compass_calibration
 '''
+#Vehicle Capabilities
+print vehicle.capabilities.set_attitude_target
+print vehicle.capabilities.set_attitude_target_local_ned
+print vehicle.capabilities.set_altitude_target_global_int
+
 
 '''
 while True:
