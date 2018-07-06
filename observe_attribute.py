@@ -17,7 +17,7 @@ vehicle.add_attribute_listener('mode', callback)
 mode_changed = False
 #time.sleep(3)
 
-#observe parameter changes
+#parameters can also be observed by adding listeners
 vehicle.parameters.add_attribute_listener('*', parameter_callback)
 
 time_start = time.time()
