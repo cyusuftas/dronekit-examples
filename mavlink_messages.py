@@ -1,3 +1,7 @@
+'''
+Author: Cahit Yusuf Tas / cyusuftas@gmail.com
+'''
+
 from dronekit import connect
 from pymavlink import mavutil
 import time

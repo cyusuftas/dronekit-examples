@@ -1,3 +1,7 @@
+'''
+Author: Cahit Yusuf Tas / cyusuftas@gmail.com
+'''
+
 from dronekit import connect, VehicleMode
 import time
 
