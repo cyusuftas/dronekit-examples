@@ -8,7 +8,7 @@ vehicle = connect('udp:127.0.0.1:14552', wait_ready=True)           #simulation
 
 def param_set(param_id, param_value):
     msg = vehicle.message_factory.param_set_encode(
-        0,0,            #target_system, target_component        
+        0,0,                                                        #target_system, target_component        
         param_id,       
         param_value,
         mavutil.mavlink.MAV_PARAM_TYPE_INT64)                       #64 bit signed int
@@ -19,15 +19,18 @@ def param_set(param_id, param_value):
 def param_callback(self, name, value):
     print '%s: %s' %(name, value)
 
+#send PARAM_REQUEST_READ to read a parameter
 def send_param_request_read(param_id):
     msg = vehicle.message_factory.param_request_read_encode(
-        0,0,
+        0,0,                                                        #target_system, target_component
         param_id,
-        -1)
+        -1)                                                         #param_index. -1: use param_id as identifier
     vehicle.send_mavlink(msg)
 
+#send PARAM_REQUEST_LIST to read whole parameters
 def send_param_request_list():
-    vehicle.send_mavlink(vehicle.message_factory.param_request_list_encode(0,0))
+    vehicle.send_mavlink(vehicle.message_factory.param_request_list_encode(
+        0,0))                                                       #target_system, target_component
 
 #observe parameter values emitted by vehicle
 @vehicle.on_message('PARAM_VALUE')
