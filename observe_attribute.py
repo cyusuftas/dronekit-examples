@@ -32,6 +32,5 @@ while True:
         break
     time.sleep(0.1)
 
-
 #close vehicle
 vehicle.close()
