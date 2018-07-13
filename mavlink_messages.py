@@ -10,10 +10,12 @@ import time
 #vehicle = connect('/dev/serial0', wait_ready=True, baud=921600)    #raspberry pi
 vehicle = connect('udp:127.0.0.1:14552', wait_ready=True)           #simulation
 
+params = {}
+
 def param_set(param_id, param_value):
     msg = vehicle.message_factory.param_set_encode(
         0,0,                                                        #target_system, target_component        
-        param_id,       
+        param_id,   
         param_value,
         mavutil.mavlink.MAV_PARAM_TYPE_INT64)                       #64 bit signed int
     vehicle.send_mavlink(msg)
@@ -39,16 +41,27 @@ def send_param_request_list():
 #observe parameter values emitted by vehicle
 @vehicle.on_message('PARAM_VALUE')
 def param_value_callback(self, name, message):
-    print '%s: %s' % (message.param_id, message.param_value)        #detailed incoming message format: http://mavlink.org/messages/common#PARAM_VALUE    
-    
-vehicle.parameters['FLTMODE1'] = 1                                  #parameters can be set by using vehicle.parameters attribute
-print 'param:FLTMODE1 value:%s' % vehicle.parameters['FLTMODE1']    #parameters can be read by using vehicle.parameters attribute
-param_set('FLTMODE1', 2)                                            #parameters can also be set by using PARAM_SET mavlink message
-time.sleep(0.1)                                                     
-send_param_request_read('FLTMODE1')                                 #individual parameters can also be read by listening the PARAM_VALUE  
-                                                                    #mavlink message emitted by the vehicle after sending PARAM_REQUEST_READ
-#send_param_request_list()
-time.sleep(0.1)
+    #print '%s: %s' % (message.param_id, message.param_value)       #detailed incoming message format: http://mavlink.org/messages/common#PARAM_VALUE
+    #save parameters to params dict
+    params[message.param_id] = message.param_value
+    if len(params) == 893:                                          #APM:Copter v3.6-dev has 893 parameters
+        print 'received 893 parameters'
+
+send_param_request_list()
+time.sleep(1)
+
+if len(params) == 893:
+    for x in sorted(params):                                        #print parameters in alphabetical order
+        print '%s: %s' % (x, params[x])
+
+##vehicle.parameters['FLTMODE1'] = 1                                  #parameters can be set by using vehicle.parameters attribute
+##print 'param:FLTMODE1 value:%s' % vehicle.parameters['FLTMODE1']    #parameters can be read by using vehicle.parameters attribute
+##param_set('FLTMODE1', 2)                                            #parameters can also be set by using PARAM_SET mavlink message
+##time.sleep(0.1)                                                     
+##send_param_request_read('FLTMODE1')                                 #individual parameters can also be read by listening the PARAM_VALUE  
+##                                                                    #mavlink message emitted by the vehicle after sending PARAM_REQUEST_READ
+###send_param_request_list()
+##time.sleep(0.1)
 
 #close
 vehicle.close()
